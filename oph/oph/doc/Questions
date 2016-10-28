@@ -1,0 +1,44 @@
+Dans la vue res.partner - create j'ai tout de suite la pop up choose a gender.
+----
+Dans la vue res.partner - create -save pourquoi j'ai deux fois nom et prenom.
+J'ai Nom Prenom et Fullname
+Comment on fait pour que certains champs s'affichent ou pas si Edit ou pas Edit.
+----
+comment faire pour avoir des propositions quand je tape les premieres lettres du nom d'un patient dans la vue crm_meeting tree?
+default_partner_id
+
+---
+Pas de vue tree des rendez vous. Comment l'obtenir:
+OK j'ai réussi à la mettre en place.
+-----
+Inject ne marche pas
+SOLVE
+-----
+sale - partner - meeting j'ai un filtre qui colle : attendee 6 et donc il faut l'enlever pour voir les crénaux.
+-----
+Dans la kanban view des calendar.event je voudrais voir le champ : "fullname" "meeting subject" et "age".
+Pas besoin d'afficher la date de naissance dans la kanban calendar view mais reste utile dans la 
+vue tree et form.
+
+Dans la kanban de calendar.event je voudrais voir aussi le champ "meeting subject" uniquement si cela ne rend pas la vue illisible car trop d'informations.
+
+dans la kanban l'idéal serait: fullname(age):name du meeting
+
+Bug dans la vue calendar form pas moyen de mettre de tono, kerato, slit lamp exam......
+bug dans la vue calendar form quand je veux ajouter des ..._ids. (tono_ids, protocole_ids...) c'est un probleme dans in_compute.
+
+La methode on_change gender ne marche pas = ne met pas de facon automatique la civilité.
+
+sales - customer meeting - est ce que je peux avoir l'ouverture de la vue calendar kanban avec un filter sur uniquement les rendez vous disponible (pour la secretaire) et sur tous les rendez vous pour les medecins
+(les medecins par contre doivent voir les crenaux libres, occupés pas les cancel) pour pouvoir decider ou non de forcer)
+
+les crenaux cancel doivent apparaitre qd on fait une tree view par partner. tree view partner on doit voir tous les crenaux quelques soit leur statut.
+
+----
+Sales : le champ date de naissance reste requis meme si collegue.
+ca marche maintenant  mais je ne sais pas pourquoi cela ne marchait pas.
+----
+Sales si je cree une company (is a company) - save -the following fields are invalide date of birth. Il faut decocher "customer". Bon c'est pas terrible. Comment mettre une methode qui 
+passe "customer" à False . Mais ce n'est pas là que l'on rentre les multicompany.
+
+Comment cela se passe maintenant pour les reports?  On peut voir cela avec le wizard : oph_etat_factory.

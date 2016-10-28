@@ -1,0 +1,31 @@
+<openerp>
+    <data>
+        
+<!-- OPH.MOTIVE-->
+<record model="oph.motive" id="mot_ctl">
+    <field name="name">CTL</field>
+    <field name="comment">Controle de suivi</field>
+</record>
+<record model="oph.motive" id="mot_bavod">
+    <field name="name">BAV OD</field>
+    <field name="comment">Baisse d'acuité OD</field>
+</record>
+<record model="oph.motive" id="mot_bavog">
+    <field name="name">BAV OG</field>
+    <field name="comment">Baisse d'acuité visuelle OG</field>
+</record>
+<record model="oph.motive" id="mot_diab">
+    <field name="name">DIABETE</field>
+    <field name="comment">Suivi de diabétique</field>
+</record>
+
+
+
+
+
+
+
+
+
+    </data>
+    </openerp>

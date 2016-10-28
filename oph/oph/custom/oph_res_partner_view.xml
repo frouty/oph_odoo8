@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data noupdate="0">
+        <!-- CUSTOM FORM FOR RES.PARTNER -->
+        <record model="ir.ui.view" id="oph_view_partner_form">
+            <field name="name">oph.partner.form.inherit</field>
+            <field name="model">res.partner</field>
+            <field eval="50" name="priority"/>
+            <field name="inherit_id" ref="base.view_partner_form"/>
+            <field name="arch" type="xml">
+                 <data>
+                    <xpath expr="//field[@name='name']" position="after">
+                        <field name="firstname" placeholder="firstname" attrs="{'invisible':[('is_company','=',True)]}"/>
+                        <field name="fullname"/>
+                    </xpath>
+                    <xpath expr="//field[@name='street2']" position="after">
+                        <field name="PO_box" placeholder="PO box"/>
+                    </xpath>
+                    <xpath expr="//field[@name='state_id']" position="attributes">
+                        <attribute name="invisible">True</attribute>                                        
+                    </xpath>
+                    <xpath expr="//field[@name='title']" position="after">
+                        <field name="gender" on_change="onchange_gender(gender)" attrs="{'required':['|',('customer','=',True),('colleague','=',True),('is_company','=',False)],'invisible':[('is_company','=',True)]}"/>
+                        <field name="dob"  attrs="{'required':['|',('customer','=',True),('is_company','=',False),('colleague','=',False)],'invisible':['|',('colleague','=',True),('is_company','=',True)]}" on_change="onchange_name(firstname, name, dob, context)"/>
+                        <field name="age" attrs="{'invisible':['|',('colleague','=',True),('is_company','=',True)]}"/>
+                        <field name="amgid" attrs="{'invisible':['|',('colleague','=',True),('is_company','=',True)]}"/>
+                        <field name="cafatid" attrs="{'invisible':['|',('colleague','=',True),('is_company','=',True)]}"/>
+                    </xpath>
+                    <xpath expr="//field[@name='title']" position="attributes">
+                        <attribute name="widget">selection</attribute><!-- pour éliminer "create et modifier"-->
+                        <!--<attribute name="required">True</attribute>NEMARCHEPAS -->                
+                    </xpath>
+                    <xpath expr="//page[@string='Sales &amp; Purchases']/group/group/field[@name='supplier']" position="after">
+                        <field name="colleague"/>
+                        <field name="trusted"/>
+                    </xpath>
+                    <button name="schedule_meeting" position="attributes">
+                        <attribute name="context">{'partner_id': active_id, 'default_partner_id': active_id, 'search_default_partner_id': active_id}</attribute>                
+                    </button>
+                  </data>
+            </field>
+        </record>
+         
+        
+    </data>
+</openerp>
