@@ -44,6 +44,7 @@ Permet de faire pleins de choses absolument géniales
              'data/measurement_type.xml',
              'custom/oph_account_invoice_view.xml',
              'wizard/oph_etat_factory_view.xml',
+             'data/prescription_data.xml',
              
              
              

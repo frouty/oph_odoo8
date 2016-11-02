@@ -36,6 +36,7 @@ class res_partner( osv.osv ):
         ie gender == male ---> mister
         NE MARCHE PAS EN 80 POURQUOI?
         """
+
         _logger.info( 'in onchange_gender ...' )
         # import pdb;pdb.set_trace()
         if context is None:
@@ -47,9 +48,10 @@ class res_partner( osv.osv ):
                 ID = title_table.search( cr, uid, [( 'name', '=', 'Mister' )] )
             if gender == 'F':
                 ID = title_table.search( cr, uid, [( 'name', '=', 'Madam' )] )
+            _logger.info( 'ID is %s', ID )
         else:
             warning = {
-                     'title':_( 'Caution' ),
+                     'title':_( 'Caution Oulala' ),
                      'message':_( 'You must choose a gender', )
                      }
             return {'warning':warning, }

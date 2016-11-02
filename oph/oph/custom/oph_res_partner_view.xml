@@ -9,15 +9,18 @@
             <field name="inherit_id" ref="base.view_partner_form"/>
             <field name="arch" type="xml">
                  <data>
+                    <xpath expr="//field[@name='name']" position="attributes">
+                        <field name="class">oe_edit_only</field>
+                    </xpath>
                     <xpath expr="//field[@name='name']" position="after">
-                        <field name="firstname" placeholder="firstname" attrs="{'invisible':[('is_company','=',True)]}"/>
+                        <field name="firstname" placeholder="firstname" attrs="{'invisible':[('is_company','=',True)]}" class="oe_edit_only"/>
                         <field name="fullname"/>
                     </xpath>
-                    <xpath expr="//field[@name='street2']" position="after">
-                        <field name="PO_box" placeholder="PO box"/>
-                    </xpath>
+                    
+                    <xpath expr="//field[@name='category_id']" position="replace"></xpath>
+                    
                     <xpath expr="//field[@name='state_id']" position="attributes">
-                        <attribute name="invisible">True</attribute>                                        
+                        <attribute name="invisible">True</attribute> 
                     </xpath>
                     <xpath expr="//field[@name='title']" position="after">
                         <field name="gender" on_change="onchange_gender(gender)" attrs="{'required':['|',('customer','=',True),('colleague','=',True),('is_company','=',False)],'invisible':[('is_company','=',True)]}"/>
