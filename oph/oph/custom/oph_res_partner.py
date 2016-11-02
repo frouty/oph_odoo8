@@ -42,21 +42,18 @@ class res_partner( osv.osv ):
         if context is None:
             context = {}
         title_table = self.pool.get( 'res.partner.title' )
-        # from pdb import  set_trace;set_trace()
         if gender:
             if gender == 'M':  # va chercher l'id dans la table res.partner.title est Mister
-                ID = title_table.read( cr, uid, [( 'name', '=', 'Mister' )] )
+                ID = title_table.search( cr, uid, [( 'name', '=', 'Mister' )] )
             if gender == 'F':
-                ID = title_table.read( cr, uid, [( 'name', '=', 'Madam' )] )
-        
-        from pdb import set_trace;set_trace()
+                ID = title_table.search( cr, uid, [( 'name', '=', 'Madam' )] )
 #         else:
 #             warning = {
 #                      'title':_( 'Caution Oulala' ),
 #                      'message':_( 'You must choose a gender', )
 #                      }
 #             return {'warning':warning, }
-        return {'value':{'title':ID}, }
+        return {'value':{'title':ID[0]}, }
 
     def onchange_name( self, cr, uid, id, firstname, lastname, dob, context = None ):
         """Will put fullname = LASTNAME, Firstname in field name of table res.partner
