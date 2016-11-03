@@ -1,5 +1,19 @@
 Dans la vue res.partner - create j'ai tout de suite la pop up choose a gender.
+SOLVE
 ----
+Inject ne marche pas
+SOLVE
+----
+Pas de vue tree des rendez vous. Comment l'obtenir:
+SOLVED
+----
+La methode on_change gender ne marche pas = 
+SOLVE
+-------
+Bug dans la vue calendar form pas moyen de mettre de tono, kerato, slit lamp exam......
+bug dans la vue calendar form quand je veux ajouter des ..._ids. (tono_ids, protocole_ids...) c'est un probleme dans in_compute.
+SOLVE
+------
 Dans la vue res.partner - create -save pourquoi j'ai deux fois nom et prenom.
 J'ai Nom Prenom et Fullname
 Comment on fait pour que certains champs s'affichent ou pas si Edit ou pas Edit.
@@ -9,14 +23,8 @@ On peut aussi rendre invisible un champ en fonction d'une valeur d'un autre cham
 <field name="discount" attrs="{'invisible':[('price_unit','=',0)]}" groups="sale.group_discount_per_so_line"/>
 ----
 comment faire pour avoir des propositions quand je tape les premieres lettres du nom d'un patient dans la vue crm_meeting tree?
-default_partner_id
-
----
-Pas de vue tree des rendez vous. Comment l'obtenir:
-OK j'ai réussi à la mettre en place.
 -----
-Inject ne marche pas
-SOLVE
+
 -----
 sale - partner - meeting j'ai un filtre qui colle : attendee 6 et donc il faut l'enlever pour voir les crénaux.
 -----
@@ -28,11 +36,7 @@ Dans la kanban de calendar.event je voudrais voir aussi le champ "meeting subjec
 
 dans la kanban l'idéal serait: fullname(age):name du meeting
 ----
-Bug dans la vue calendar form pas moyen de mettre de tono, kerato, slit lamp exam......
-bug dans la vue calendar form quand je veux ajouter des ..._ids. (tono_ids, protocole_ids...) c'est un probleme dans in_compute.
-DONE
-------
-La methode on_change gender ne marche pas = ne met pas de facon automatique la civilité.
+
 
 sales - customer meeting - est ce que je peux avoir l'ouverture de la vue calendar kanban avec un filter sur uniquement les rendez vous disponible (pour la secretaire) et sur tous les rendez vous pour les medecins
 (les medecins par contre doivent voir les crenaux libres, occupés pas les cancel) pour pouvoir decider ou non de forcer)

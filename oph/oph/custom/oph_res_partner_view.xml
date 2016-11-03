@@ -10,13 +10,13 @@
             <field name="arch" type="xml">
                  <data>
                     <xpath expr="//field[@name='name']" position="attributes">
-                        <field name="class">oe_edit_only</field>
+                        <attribute name="class">oe_edit_only</attribute>
                     </xpath>
                     <xpath expr="//field[@name='name']" position="after">
                         <field name="firstname" placeholder="firstname" attrs="{'invisible':[('is_company','=',True)]}" class="oe_edit_only"/>
                         <field name="fullname"/>
                     </xpath>
-                    
+                    <xpath expr="//field[@name='parent_id']" position="replace"></xpath>
                     <xpath expr="//field[@name='category_id']" position="replace"></xpath>
                     
                     <xpath expr="//field[@name='state_id']" position="attributes">
