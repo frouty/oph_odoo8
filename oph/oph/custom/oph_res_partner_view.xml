@@ -16,8 +16,13 @@
                         <field name="firstname" placeholder="firstname" attrs="{'invisible':[('is_company','=',True)]}" class="oe_edit_only"/>
                         <field name="fullname"/>
                     </xpath>
-                    <xpath expr="//field[@name='parent_id']" position="replace"></xpath>
-                    <xpath expr="//field[@name='category_id']" position="replace"></xpath>
+                    <!-- mettre en invisible -->
+                    <xpath expr="//field[@name='parent_id']" position="attributes">
+                        <attribute name="invisible">True</attribute>                
+                    </xpath>
+                    <xpath expr="//field[@name='category_id']" position="attributes">
+                        <attribute name="invisible">True</attribute>                
+                    </xpath>
                     
                     <xpath expr="//field[@name='state_id']" position="attributes">
                         <attribute name="invisible">True</attribute> 

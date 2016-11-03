@@ -318,6 +318,21 @@
         </record>
         
 
+        <!-- SEARCH VIEW FOR CALENDAR EVENT = OPH_AGENDA-->
+        <record model="ir.ui.view" id="oph_agenda_search_view">
+            <field name="name">oph.agenda.search.view</field>
+            <field name="model">calendar.event</field>
+            <field name="inherit_id" ref="calendar.view_calendar_event_search"/>
+            <field name="arch" type="xml">
+                <field name="name" position="after">
+                    <field name="partner_id"/>
+                </field>
+                <filter name="message_unread" position="before">
+                    <filter string="Open meetings" name="open_meeting" domain="[('state', '=', 'open')]"/>
+                </filter>
+            </field>
+        </record>        
+
         <!-- TO HAVE A CALENDAR MENU THAT PUT DIRECTLY TO TREE VIEW OF CALENDAR WITHOUT PASSING BY CALENDAR VIEW-->
         <record id="action_calendar_event_tree" model="ir.actions.act_window">
             <field name="name">Meetings</field>
