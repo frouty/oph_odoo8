@@ -107,7 +107,7 @@ Spécifie le plus bas niveau de messages de log qui sera traité. DEBUG est le p
 selection
 ======
 Qd on a un champ selection avec comme selection la liste de tuple: 
-
+~~~python
 STATE_SELECTION = [
         ('needsAction', 'Needs Action'),
         ('tentative', 'Uncertain'),
@@ -116,19 +116,19 @@ STATE_SELECTION = [
     ]
     
 'state': fields.selection(STATE_SELECTION, 'Status', readonly=True, help="Status of the attendee's participation"),    
-
+~~~
 On peut utiliser *default* comme cela:
-
+~~~python
   _defaults = {
         'state': 'needsAction',
     }
-    
+~~~
   on passe donc la key
   
 Method overriding - Super
 =====
 
-``̀`python
+~~~python
 class Parent(object):
 	def __init__(self):
 		self.value = 5
@@ -138,18 +138,18 @@ class Parent(object):
 class Child(object):
 	def get_value(self):
 		return self.value +1
-```
+~~~
 
 On réécrit tout simplement la méthode avec le meme nom.
 
 Qd on surcharge une méthode il faut se demander:
 
-- si l'on veut filtrer les arguments : pre-traitement
-- si l'on veut filtrer les résultats : post-traitement. 
-- ou les deux 
+- si l'on veut filtrer les arguments : pre-traitement  
+- si l'on veut filtrer les résultats : post-traitement.  
+- ou les deux  
 
 * prefiltering
-``̀`python
+~~~python
 import datetime
 
 class Logger(object):
@@ -161,7 +161,7 @@ class TimestampLogger(Logger):
         message = "{ts} {msg}".format(ts=datetime.datetime.now().isoformat(),
                                       msg=message)
         super(TimestampLogger, self).log(message)
-``̀`
+~~~
 
 *post-processing
 
