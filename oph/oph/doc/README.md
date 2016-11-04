@@ -238,6 +238,56 @@ Buttons
 ===
 - http://www.slideshare.net/openobject/odoo-smart-buttons
 
+~~~xml
+<button string="Opportunities"..
+		name="..."  
+		context="..."..
+		class="oe_inline oe_stat_button"..
+		type="action"/>
+~~~
+Avec cela on a un petit carré avec la "string"..
+
+Pour rajouter une petite icone.  
+~~~xml
+<button string="Opportunities"..
+		name="..."  
+		context="..."..
+		icon="fa-star"..
+		class="oe_inline oe_stat_button"..
+		type="action"/>
+~~~
+pour voir les petites icons: ..
+- http://fontawesome.io/cheatsheet/..
+
+syntaxe
+---
+~~~xml
+<button>
+tout ce qu'on veut
+</button>
+~~~
+On peut mettre du html..
+~~~xml
+<button  class=".." name=".." icon="fa-star" type="..">
+<p>bonjour</p>
+</button>
+~~~
+On aura un cadre avec marqué bonjour.  
+
+On peut mettre du html et du dynamique:  
+~~~xml
+<button class=".." name=".." icon="fa-star" type="..">
+ <span><field name="opportunity_count"/>Opportunities</span>
+~~~
+
+Pour un champ one2many  
+phonecall_ids in res.partner  
+1- Ajouter un champ fonctionnel phonecall_count to res.partner  
+2- Ajouter attrs widget="statinfo"
+~~~xml
+<button class=".." name=".." icon="fa-star" type=".." context="..">
+ <field string="Calls" name="phonecall_count" widget="statinfo"/>
+~~~
 Views
 ===
 - https://www.odoo.com/documentation/8.0/reference/views.html
