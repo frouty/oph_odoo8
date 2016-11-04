@@ -21,7 +21,7 @@ mode debug --> Edit form view --> External ID == ref
             </xpath>
             </data>
 </field>
-
+```
 
 Comment supprimer le "create and edit"
 ========         
@@ -35,6 +35,7 @@ on peut supprimer le "create and edit" avec :
                         <attribute name="widget">selection</attribute><!-- pour éliminer "create et modifier"-->
                         <!--<attribute name="required">True</attribute>NEMARCHEPAS -->                
 </xpath>
+```
 
 Comment vérifier un champ et afficher une pop up?
 ===============
@@ -222,5 +223,9 @@ Il y a un fichier addons/account_report.xml avec <report
 	xml='account/report/....'
 	xsl='
 	/>
-	
+
+des liens
+---
+- https://www.odoo.com/documentation/8.0/reference/qweb.html  
+https://www.odoo.com/documentation/8.0/reference/reports.html  
 	
