@@ -165,7 +165,7 @@ class TimestampLogger(Logger):
 
 *post-processing
 
-``̀`python
+~~~python
 import os
 
 class FileCat(object):
@@ -180,9 +180,9 @@ class FileCatNoEmpty(FileCat):
         lines = super(FileCatNoEmpty, self).cat(filepath)
         nonempty_lines = [l for l in lines if l != '\n']
         return nonempty_lines 
-``̀`
+~~~
 
-La syntaxe c'est super(NomChildClass, self).nomdelafonctionparent(args)
+La syntaxe c'est: *super(NomChildClass, self).nomdelafonctionparent(args)*
 
 
 model_obj.read(cr,uid,ids(liste des records à lire), [liste des champs à lire],context=context)
@@ -228,5 +228,5 @@ Il y a un fichier addons/account_report.xml avec <report
 des liens
 ---
 - https://www.odoo.com/documentation/8.0/reference/qweb.html  
-https://www.odoo.com/documentation/8.0/reference/reports.html  
+- https://www.odoo.com/documentation/8.0/reference/reports.html  
 	
