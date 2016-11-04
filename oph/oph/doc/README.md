@@ -206,7 +206,7 @@ pour récuper un model
 self.pool['nom_ du_model]
 
 
-report
+Report
 ====
 pour créer un report sur un model particulier il faut créer :
 
@@ -231,4 +231,13 @@ des liens
 ---
 - https://www.odoo.com/documentation/8.0/reference/qweb.html  
 - https://www.odoo.com/documentation/8.0/reference/reports.html  
-	
+
+- http://www.solibre.info/odoo_doc/_build/html/howtos/backend.html
+
+Buttons
+===
+- http://www.slideshare.net/openobject/odoo-smart-buttons
+
+Views
+===
+- https://www.odoo.com/documentation/8.0/reference/views.html
