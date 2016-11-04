@@ -63,11 +63,11 @@ from openerp.tools import DEFAULT_SERVER_DATE_FORMAT, DEFAULT_SERVER_DATETIME_FO
 
 calendar.event
 ======
-start fields.function(_compute, .......required = True....)
-stop fields.function(_compute, ...... required = True)
+start fields.function(_compute, .......required = True....)  
+stop fields.function(_compute, ...... required = True)  
 
-partner_id Partner many2one
-partner_ids Attendees many2many
+partner_id Partner many2one  
+partner_ids Attendees many2many  
 
 rrule : recurrent rule
 
@@ -81,21 +81,22 @@ import logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
+```
 
 après cela s'utilise comme cela :
-
+~~~python
 logger.info('blablabla')
 logger.debug('Records: %s', records)
 logger.info('updating records')
-```
+~~~
 
-Il y a plusieurs niveaux de logging:
-- info
--debug
+Il y a plusieurs niveaux de logging:  
+- info  
+- debug  
 
--warning
--error
--critical
+- warning  
+- error  
+- critical  
 
 
 logger.setLevel()
