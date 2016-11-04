@@ -217,14 +217,16 @@ Si on veut accéder à plusieurs models il faut créer un custom reports class q
 
 Il y a un fichier  addons/views/report_invoice.xml qui contient les templates.
 
-Il y a un fichier addons/account_report.xml avec <report 
+Il y a un fichier addons/account_report.xml avec
+~~~xml
+ <report 
 	id= ...
 	model=...
 	string=...
 	xml='account/report/....'
 	xsl='
 	/>
-
+~~~
 des liens
 ---
 - https://www.odoo.com/documentation/8.0/reference/qweb.html  
