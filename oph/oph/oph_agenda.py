@@ -263,8 +263,9 @@ class calendar_event( orm.Model ):
                                                     ( 'in', _( 'In' ) ),
                                                     ( 'in_between', _( 'In Between' ) ),
                                                     ( 'done', 'Out' ),
-                                                    ( 'office', _( 'Office' ) )], readonly = False ),
-                'partner_id':fields.many2one( 'res.partner', 'Partner', ),
+                                                    ( 'office', _( 'Office' ) )
+                                                    ], readonly = False ),
+                'partner_id':fields.many2one( 'res.partner', 'Partner', ),  # patient appointment
                 'tono_ids':fields.one2many( 'oph.measurement', 'meeting_id', 'Tonometry', domain = [( 'type_id.code', '=', 'tono' )] ),
                 'refraction_ids':fields.one2many( 'oph.measurement', 'meeting_id', 'Refraction', domain = [( 'type_id.code', '=', 'ref' )] ),
                 'keratometry_ids':fields.one2many( 'oph.measurement', 'meeting_id', 'Keratometry', domain = [( 'type_id.code', '=', 'ker' )] ),
@@ -278,6 +279,7 @@ class calendar_event( orm.Model ):
                 'conclusion_ids':fields.one2many( 'oph.measurement', 'meeting_id', 'Conclusion Line', domain = [( 'type_id.code', '=', 'conc' )] ),
                 'miscellaneous_ids':fields.one2many( 'oph.measurement', 'meeting_id', 'Miscellaneous informations', domain = [( 'type_id.code', '=', 'misc' )] ),
                 'tag':fields.selection( [
+                                        ( 'close', 'Close' ),
                                         ( 'office', _( 'Office' ) ),
                                         ( 'or', _( 'OR' ) ),
                                         ( 'cs', _( 'Consultation' ) ),  # Add for persistence usefull for change to cancel

@@ -19,7 +19,7 @@ class agenda_factory( osv.osv_memory ):
     _description = "Agenda factory. Set up of slots"  # Mise en place des crénaux"
 
 
-    def _get_status_agenda( self, cursor, user_id, context = None ):
+    def _get_tag_agenda( self, cursor, user_id, context = None ):
         return ( 
                 ( 'cs', 'Consultation' ),
                 ( 'tech', 'Technique' ),
@@ -299,7 +299,12 @@ class agenda_factory( osv.osv_memory ):
                 "end_h":fields.char( 'Stop', size = 16, help = "End period. eg: 12:00. This will be the end of the last slot, not the last slot. Or end of brakfast time for the All day" ),
                 "day_on":fields.char( 'Day On', size = 16, help = "Start of the day" ),
                 "day_off":fields.char( 'Day Off', size = 16, help = "End of the day" ),
-                "state": fields.selection( _get_status_agenda, 'State', readonly = False ),
+                "state": fields.selection( [
+                                            ( 'cs', 'Consultation' ),
+                                            ( 'tech', 'Technique' ),
+                                            ( 'close', 'Close' ),
+                                            ],
+                                           'State', readonly = False ),
                 "user_id": fields.many2one( 'res.users', 'Responsible' ),
                 }
     _defaults = {
