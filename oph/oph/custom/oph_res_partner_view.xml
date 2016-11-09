@@ -43,7 +43,8 @@
                         <field name="trusted"/>
                     </xpath>
                     <button name="schedule_meeting" position="attributes">
-                        <attribute name="context">{'partner_id': active_id, 'default_partner_id': active_id, 'search_default_partner_id': active_id}</attribute>                
+                        <!--<attribute name="context">{'partner_id': active_id, 'default_partner_id': active_id, 'search_default_partner_id': active_id}</attribute>-->
+                        <attribute name="name">schedule_meeting_all</attribute>
                     </button>
                   </data>
             </field>

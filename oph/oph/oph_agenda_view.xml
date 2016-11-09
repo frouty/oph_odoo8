@@ -79,7 +79,9 @@
                     <attribute name="invisible">1</attribute>
                 </xpath>
              
-                <xpath expr="//page[@string='Meeting Details']/group/group/field[@name='alarm_ids']" position="replace"/>
+                <xpath expr="//page[@string='Meeting Details']/group/group/field[@name='alarm_ids']" position="attributes"> 
+                    <attributes name="invisible">True</attributes>
+                </xpath>
         
                 <xpath expr="//page[@string='Options']" position="after">
                      <page string="Tonometry" attrs="{'invisible':[('state','in',['draft','open','wait','busy'])]}" groups="oph.sec_group_id">
@@ -310,8 +312,21 @@
                     <field name="location" position="replace"/>
                     <field name="class" position="replace"/>
                     <field name="duration" position="replace"/>
+                    <field name="start_date" position="attributes">
+                        <attribute name="invisible">True</attribute>
+                    </field>
                     <field name="name" position="after">
-                        <field name="partner_id"/>                
+                        <field name="partner_id"/> 
+                    </field>
+                    <field name="show_as" position="attributes">
+                        <atrribute name="invisible">True</atrribute>
+                    </field>
+                    <field name="state" position="attributes">
+                        <attribute name="invisible">False</attribute>
+                        <attribute name="string">State</attribute>
+                    </field>
+                    <field name="state" position="after">
+                        <field name="categ_ids"></field>
                     </field>
                 </data>
             </field>

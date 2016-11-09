@@ -19,12 +19,12 @@ class agenda_factory( osv.osv_memory ):
     _description = "Agenda factory. Set up of slots"  # Mise en place des crénaux"
 
 
-    def _get_tag_agenda( self, cursor, user_id, context = None ):
-        return ( 
-                ( 'cs', 'Consultation' ),
-                ( 'tech', 'Technique' ),
-                ( 'close', 'Close' ),
-                )
+#     def _get_tag_agenda( self, cursor, user_id, context = None ):
+#         return ( 
+#                 ( 'cs', 'Consultation' ),
+#                 ( 'tech', 'Technique' ),
+#                 ( 'close', 'Close' ),
+#                 )
 
     def onetotwodigit( self, hm ):
         """
@@ -200,7 +200,7 @@ class agenda_factory( osv.osv_memory ):
         ll = list()
         if context is None:
             context = {}
-        res = self.read( cr, uid, ids, ['date', 'start_dt', 'stop_dt', 'step', 'ampm', 'start_h', 'end_h', 'day_on', 'day_off', 'name', 'state', 'user_id'], context = None )
+        res = self.read( cr, uid, ids, ['date', 'start_dt', 'stop_dt', 'step', 'ampm', 'start_h', 'end_h', 'day_on', 'day_off', 'name', 'tag', 'state', 'user_id'], context = None )
         _logger.info( "data of the wizard: %s", res )
         _logger.info( "type of res : %s", type( res ) )
         # from pdb import set_trace;set_trace()
@@ -220,8 +220,8 @@ class agenda_factory( osv.osv_memory ):
             _logger.info( 'zip(I,II): %s', zip( l, ll ) )
             for ( begin, end ) in p:
                 _logger.info( "begin, end: %s ; %s", begin, end )
-                if res['state'] in ['cs', 'tech']:
-                    tag = res['state']
+                if res['tag'] in ['cs', 'tech']:
+                    tag = res['tag']
                 else:
                     tag = False
                # _logger.info('begin:%s, stop_datetime: %s ,name: %s, state: %s, tag: %s', (begin,end,res['name'],res['state'], tag,))
@@ -229,8 +229,10 @@ class agenda_factory( osv.osv_memory ):
                       'start_datetime':begin.format( fmt ),
                       'stop_datetime':end.format( fmt ),
                       'name':res['name'],
+                      'tag': tag,
                       'state':res['state'],
-                      'tag': tag}
+                      'user_id':res['user_id'][0]
+                      }
                 _logger.info( 'vals: %s', vals )
                 self.pool.get( 'calendar.event' ).create( cr, uid, vals, context = None )
         # --
@@ -259,7 +261,10 @@ class agenda_factory( osv.osv_memory ):
                       'stop_datetime':end.format( fmt ),
                       'name':res['name'],
                       'state':res['state'],
-                      'tag': tag}
+                      'tag': tag,
+                      'state':res['state'],
+                      'user_id':res['user_id'][0]
+                      }
                 _logger.info( 'vals : %s', vals )
                 self.pool.get( 'calendar.event' ).create( cr, uid, vals, context = None )
 
@@ -281,7 +286,9 @@ class agenda_factory( osv.osv_memory ):
                       'stop_datetime':end.format( fmt ),
                       'name':res['name'],
                       'state':res['state'],
-                      'tag': tag}
+                      'tag': tag,
+                      'state':res['state'],
+                      'user_id':res['user_id'][0]}
                 _logger.info( 'vals : %s', vals )
                 self.pool.get( 'calendar.event' ).create( cr, uid, vals, context = None )
             return True
@@ -299,12 +306,16 @@ class agenda_factory( osv.osv_memory ):
                 "end_h":fields.char( 'Stop', size = 16, help = "End period. eg: 12:00. This will be the end of the last slot, not the last slot. Or end of brakfast time for the All day" ),
                 "day_on":fields.char( 'Day On', size = 16, help = "Start of the day" ),
                 "day_off":fields.char( 'Day Off', size = 16, help = "End of the day" ),
-                "state": fields.selection( [
+                "tag": fields.selection( [
                                             ( 'cs', 'Consultation' ),
                                             ( 'tech', 'Technique' ),
-                                            ( 'close', 'Close' ),
+                                            # ( 'close', 'Close' ),
                                             ],
-                                           'State', readonly = False ),
+                                           'Type', readonly = False ),
+                'state':fields.selection( [
+                                          ( 'open', 'Open' ),
+                                          ( 'close', 'Close' )
+                                          ], "State" ),
                 "user_id": fields.many2one( 'res.users', 'Responsible' ),
                 }
     _defaults = {
@@ -313,7 +324,7 @@ class agenda_factory( osv.osv_memory ):
                  'ampm':'daylong',
                  'day_on':'08:00',
                  'day_off':'15:30',
-                 'state':'cs',
+                 'state':'open',
                 }
 
 agenda_factory()

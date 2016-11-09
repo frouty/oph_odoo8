@@ -189,4 +189,15 @@ class res_partner( osv.osv ):
                 name += '(' + record.gender + ')'
             res.append( ( record.id, name ) )
         return res
+    
+    def schedule_meeting_all( self, cr, uid, ids, context = None ):
+        partner_ids = list( ids )
+        partner_ids.append( self.pool.get( 'res.users' ).browse( cr, uid, uid ).partner_id.id )
+        res = self.pool.get( 'ir.actions.act_window' ).for_xml_id( cr, uid, 'calendar', 'action_calendar_event', context )
+        res['context'] = {
+                          'default_partner_ids':partner_ids,
+                          'default_partner_id':partner_ids and partner_ids[0] or False,
+                          'search_default_open_meeting':True
+                          }
+        return res
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:

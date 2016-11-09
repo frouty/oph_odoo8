@@ -279,7 +279,7 @@ class calendar_event( orm.Model ):
                 'conclusion_ids':fields.one2many( 'oph.measurement', 'meeting_id', 'Conclusion Line', domain = [( 'type_id.code', '=', 'conc' )] ),
                 'miscellaneous_ids':fields.one2many( 'oph.measurement', 'meeting_id', 'Miscellaneous informations', domain = [( 'type_id.code', '=', 'misc' )] ),
                 'tag':fields.selection( [
-                                        ( 'close', 'Close' ),
+                                        ( 'close', 'Close' ),  # je le garde mais je pense qu'il ne faut pas l'utiliser on utilisear plutot le close de state
                                         ( 'office', _( 'Office' ) ),
                                         ( 'or', _( 'OR' ) ),
                                         ( 'cs', _( 'Consultation' ) ),  # Add for persistence usefull for change to cancel

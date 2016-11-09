@@ -8,10 +8,13 @@
             <field name="arch" type="xml">
                 <form string="X_agenda_Factory">
                     <group col="2">
-                        <field name="user_id"/>
+                        <!--<field name="user_id" domain="[('colleague','=','True')]"/> colleague n'est pas defini dans res.users.-->
+                        <field name="user_id"/>    
+                        <!--<label for="state" string="Type"/> Uggly why?-->
+                        <field name="tag"/>
                         <field name="state"/>
                         <field name="step"/>
-                        <field name="name"/>               
+                        <field name="name"/> 
                         <field name="date" attrs="{'invisible':[('ampm','=',False)],'required':['|','|',('ampm','=','afternoon'),('ampm','=','morning'),('ampm','=','daylong')]}"/>
                         <field name="start_dt" attrs="{'invisible': [('ampm','!=',False)]}"/>
                         <field name="stop_dt" attrs="{'invisible': [('ampm','!=',False)]}"/>
@@ -20,6 +23,7 @@
                         <field name="day_off" attrs="{'invisible': [('ampm','!=','daylong')]}"/>
                         <field name="start_h" on_change="onchange_start(start_h)" attrs="{'invisible':[('ampm','=',False)]}"/>
                         <field name="end_h" on_change="onchange_end(end_h)" attrs="{'invisible':[('ampm','=',False)]}"/>
+                        <!-- field name="categ_ids"/ idee à creuser-->
                     </group>
                     <button string="Cancel" special="cancel" icon="gtk-cancel"/>
                     <button name="create_slot" string="create slots"  type="object" icon="gtk-ok"/>
