@@ -41,7 +41,8 @@
                         <!-- ATTENTION pour que le boutton refraction history marche il faut une entrée field name="type_id" dans la search view de oph.measurement -->
                         <button string="LogSLE" name="%(oph.logsle_action_id)d" type="action" context="{'search_default_partner_id':partner_id}" groups="oph.sec_group_id"/>
                         <button string="Treatment" name="%(oph.medication_line_action_id)d" type="action" context="{'search_default_partner_id':partner_id}" groups="oph.sec_group_id"/>
-                        <button string="Prescriber" name="create_defaults_medication_lines" type="object" attrs="{'invisible':[('state','in',['cs','tech','draft','open','wait','cancel','no_show','busy'])]}" groups="oph.oph_group_id"/>                         
+                        <button string="Prescriber" name="create_defaults_medication_lines" type="object" attrs="{'invisible':[('state','in',['cs','tech','draft','open','wait','cancel','no_show','busy'])]}" groups="oph.oph_group_id"/>
+                        <button string="Prescription Maker" name="create_defaults_protocole_lines" type="object" groups="oph.oph_group_id"/>
                         <button string="RT5100" name="get_rt5100" type="object"/>
                         <button string="Inject" name="selection_partner_id" type="object"/>
                     </header>
@@ -232,7 +233,7 @@
                     <page string="Biology Lines" attrs="{'invisible':[('state','in',['draft','open','wait','busy'])]}" groups="oph.sec_group_id">
                         <field name="biology_line_ids" context="{'protocole_line_type':'Bio'}" editable="top">
                             <tree string="Biology Line" editable="bottom">
-                                <field name="name"/>
+                                <field name="name" invisible="1"/>
                                 <field name="exam_id" domain="[('type','=','Bio')]"/>
                                 <field name="comment"/>
                                 <field name="result"/>
