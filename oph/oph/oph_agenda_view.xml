@@ -209,13 +209,14 @@
                     
                     <page string="Medication Lines" attrs="{'invisible':[('state','in',['draft','open','wait','busy'])]}" groups="oph.sec_group_id">
                         <field name="medication_line_ids">
-                            <tree string="Medication Line" editable="top">
-                                <field name="name"/>
+                            <tree string="Medication Line" editable="top" default_order="seq">
+                                <field name="name" invisible='1'/> <!-- pas moyen de faire disparaitre-->
+                                <field name="seq"/>
                                 <field name="brandname_id"/>
                                 <field name="poso"/>
                                 <field name="duration"/>
                                 <field name="ors" required="True"/>
-                                <field name="ors_needed" invisible="1"/>
+                                <field name="ors_needed" invisible="0"/>
                             </tree>
                         </field>
                     </page>

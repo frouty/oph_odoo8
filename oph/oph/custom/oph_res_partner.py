@@ -188,6 +188,7 @@ class res_partner( osv.osv ):
             if record.gender:
                 name += '(' + record.gender + ')'
             res.append( ( record.id, name ) )
+            _logger.info( 'getting out of res.partner name_get' )
         return res
     
     def schedule_meeting_all( self, cr, uid, ids, context = None ):

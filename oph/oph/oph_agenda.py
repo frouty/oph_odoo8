@@ -90,11 +90,11 @@ class calendar_event( orm.Model ):
         res = {'value': {}}
         print "PASSING through", inspect.stack()[0][3]
         print "STATE, DATE, DURATION, ORGANIZER: %s, %s, %s, %s" % ( state, date, duration, organizer )
-        slot_ids = self.search( cr, uid, [( 'date', '=', date )] )
+        slot_ids = self.search( cr, uid, [( 'start_date', '=', date )] )
         print "RESULT OF SEARCH:", slot_ids
         for record in self.browse( cr, uid, slot_ids, context = context ):
-            print "RECORD DATE IS;", record.date
-            print "DATE_DEADLINE IS", record.date_deadline
+            print "RECORD DATE IS;", record.start_datetime
+            print "DATE_DEADLINE IS", record.stop_datetime
             print "PARTNER NAME:", record.partner_id.name
         if slot_ids:
            warning = {
@@ -144,7 +144,7 @@ class calendar_event( orm.Model ):
         with the cancel calendar.event
         """
         self.write( cr, uid, ids, {"state": "cancel"}, context = context )
-        vals = self.read( cr, uid, ids, fields = ['date', 'duration', 'date_deadline', 'tag' ], context = context, load = '_classic_read' )
+        vals = self.read( cr, uid, ids, fields = ['start_datetime', 'duration', 'stop_datetime', 'tag' ], context = context, load = '_classic_read' )
        # from pdb import set_trace;set_trace()
         for record in vals:  # on boucle sur les données des record retournées.
         # record est un dictionnaire
@@ -176,7 +176,7 @@ class calendar_event( orm.Model ):
        # pricelist = part.property_product_pricelist and part.property_product_pricelist.id or False
         res = {'default_partner_id': meeting.partner_id.id,
                'default_pricelist_id': meeting.partner_id.property_product_pricelist.id,
-               'default_date_acte':meeting.start,
+               'default_date_acte':meeting.start_date,
                'default_origin':'Office',
                }
         return {  # Comment if you don't want to open a quotation view
