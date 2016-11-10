@@ -5,7 +5,6 @@
         <!-- Resource: oph.inn-->
         <record id="inn0" model="oph.inn">
             <field name="name">timolol</field>
-            <field name="ors_needed">True</field>
         </record>
         <record id="tim0" model="oph.brandname">
             <field name="brandname_id" ref="inn0"/>
@@ -384,7 +383,6 @@
 <!-- -->
         <record id="inn25" model="oph.inn">
             <field name="name">Pyrimethamine</field>
-            <field name="ors_needed">False</field>
         </record>
         <record id="malo0" model="oph.brandname">
             <field name="brandname_id" ref="inn25"/>
@@ -394,7 +392,6 @@
 <!-- -->
         <record id="inn26" model="oph.inn">
             <field name="name">Azithromycine</field>
-            <field name="ors_needed">False</field>
         </record>
         <record id="zithr0" model="oph.brandname">
             <field name="brandname_id" ref="inn26"/>
@@ -404,7 +401,6 @@
 <!-- -->
         <record id="inn27" model="oph.inn">
             <field name="name">Acide folinique</field>
-            <field name="ors_needed">False</field>
         </record>
         <record id="leder0" model="oph.brandname">
             <field name="brandname_id" ref="inn27"/>
@@ -414,7 +410,6 @@
 <!-- -->
         <record id="inn28" model="oph.inn">
             <field name="name">Prednisone</field>
-            <field name="ors_needed">False</field>
         </record>
         <record id="cortcyl0" model="oph.brandname">
             <field name="brandname_id" ref="inn28"/>
@@ -708,7 +703,7 @@
         <!-- Sd SEC -->
         <record id="path11" model="oph.pathology">
             <field name="name">Sd Sec</field>
-            <field name="ods">ods</field>
+            <field name="ors">ors</field>
         </record>
         <record id="path11_line0" model="oph.medication.line.template">
             <field name="pathology_id" ref="path11"/>
@@ -721,7 +716,7 @@
         <!-- Sd SEC et Vit A -->        
         <record id="path12" model="oph.pathology">
             <field name="name">Sd Sec - Vit A</field>
-            <field name="ods">ods</field>
+            <field name="ors">ors</field>
         </record>
         <record id="path12_line0" model="oph.medication.line.template">
             <field name="pathology_id" ref="path12"/>
@@ -958,7 +953,7 @@
         <record id="ex20" model="oph.exam">
             <field name="name">Antithrombine III</field>
             <field name="code">AT III</field>
-            <field name="type_id">Bio</field>
+            <field name="type">Bio</field>
         </record>
         <record id="ex21" model="oph.exam">
             <field name="name">Serologie HIV</field>

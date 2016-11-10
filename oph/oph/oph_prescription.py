@@ -117,8 +117,8 @@ class pathology( orm.Model ):
               'medication_line_ids':fields.one2many( 'oph.medication.line.template', 'pathology_id', 'Lines' ),
               'comment':fields.text( 'Comment', help = 'Used to add some informations on the prescription report' ),
               'ors':fields.selection( [( 'or', _( 'Right Eye' ) ),
-                                            ( 'os', _( 'Left Eye' ) ),
-                                            ( 'ors', _( 'Right and Left Eye' ) ), ], 'ODS', required = False, ),
+                                       ( 'os', _( 'Left Eye' ) ),
+                                       ( 'ors', _( 'Right and Left Eye' ) ), ], 'ODS', required = False, ),
               }
 
 class oph_medication_line_template( orm.Model ):
