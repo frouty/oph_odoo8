@@ -97,11 +97,11 @@ class calendar_event( orm.Model ):
             print "DATE_DEADLINE IS", record.stop_datetime
             print "PARTNER NAME:", record.partner_id.name
         if slot_ids:
-           warning = {
+            warning = {
          'title': _( "Warning for a close slot" ),
          'message': _( "Well are you sure you want to add a slot" ),
          }
-           return {'value': res.get( 'value', {} ), 'warning':warning}
+            return {'value': res.get( 'value', {} ), 'warning':warning}
         return {'value': {}}
  
     def onchange_partner_id( self, cr, uid, ids, state, given_date, context = None ):
@@ -145,7 +145,7 @@ class calendar_event( orm.Model ):
         """
         self.write( cr, uid, ids, {"state": "cancel"}, context = context )
         vals = self.read( cr, uid, ids, fields = ['start_datetime', 'duration', 'stop_datetime', 'tag' ], context = context, load = '_classic_read' )
-       # from pdb import set_trace;set_trace()
+        # from pdb import set_trace;set_trace()
         for record in vals:  # on boucle sur les données des record retournées.
         # record est un dictionnaire
         # comment récupérer le statut cs ou technique? C'est tag
@@ -173,7 +173,7 @@ class calendar_event( orm.Model ):
         # return True #uncomment if just want the change state to out
         # get info for the quotation
         meeting = self.browse( cr, uid, ids[0], context = context )  # comment if you don't want to open a quotation view
-       # pricelist = part.property_product_pricelist and part.property_product_pricelist.id or False
+        # pricelist = part.property_product_pricelist and part.property_product_pricelist.id or False
         res = {'default_partner_id': meeting.partner_id.id,
                'default_pricelist_id': meeting.partner_id.property_product_pricelist.id,
                'default_date_acte':meeting.start_date,
@@ -282,7 +282,7 @@ class calendar_event( orm.Model ):
                                         ( 'close', 'Close' ),  # je le garde mais je pense qu'il ne faut pas l'utiliser on utilisear plutot le close de state
                                         ( 'office', _( 'Office' ) ),
                                         ( 'or', _( 'OR' ) ),
-                                        ( 'cs', _( 'Consultation' ) ),  # Add for persistence usefull for change to cancel
+                                        ( 'cs', _( 'Consultation' ) ),  # Add for persistence usefull for change to cancel.So when cancelled you keep track of tag to rebuild a new slot with same tag.
                                         ( 'tech', _( 'Technique' ) ),  # Add for persistence usefull for change to cancel
                                         ], 'Tag', select = True, readonly = True ),
                 'free':fields.boolean( 'Free', help = 'True if not invoiced' ),  # for free consultation

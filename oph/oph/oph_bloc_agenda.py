@@ -117,7 +117,7 @@ class oph_bloc_agenda(osv.osv):
         and month 'eg: junuary, february,....)
         Using datetime module
         """
-        import pudb;pudb.set_trace()
+        import pdb;pdb.set_trace()
         res = {}
         if context is None:
             context = {}

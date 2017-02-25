@@ -38,7 +38,7 @@ class res_partner( osv.osv ):
         """
 
         _logger.info( 'in onchange_gender ...' )
-        # import pdb;pdb.set_trace()
+       
         if context is None:
             context = {}
         title_table = self.pool.get( 'res.partner.title' )
@@ -70,8 +70,8 @@ class res_partner( osv.osv ):
                 warning = {}
                 warning['title'] = _( 'Caution' )
                 warning['message'] = _( 'There is already an homonyme with the same birthdate' )
-        # return {'value' : {'name': (lastname.upper() if lastname else ''), 'firstname': (firstname.capitalize() if firstname else '')}, 'warning': warning}
-        return {'value': {'name':( lastname.upper() if lastname else '' ), 'firstname':( ' '.join( map( str, map( lambda w:w.capitalize(), firstname.split() ) ) ) if firstname else '' )}, 'warning':warning}
+        return {'value' : {'name': (lastname.upper() if lastname else ''), 'firstname': (firstname.capitalize() if firstname else '')}, 'warning': warning}
+        #return {'value': {'name':( lastname.upper() if lastname else '' ), 'firstname':( ' '.join( map( str, map( lambda w:w.capitalize(), firstname.split() ) ) ) if firstname else '' )}, 'warning':warning}
 
     def _format_fullname( self, cr, uid, ids, name, args, context = None ):
         """
@@ -82,10 +82,11 @@ class res_partner( osv.osv ):
         for m in self.browse( cr, uid, ids, context = context ):
             firstname = m.firstname
             lastname = m.name
+            #import pdb;pdb.set_trace()
             fullname = ''
             if lastname:
-                # fullname=(lastname.upper() if lastname else '') + (", " +firstname.capitalize() if firstname else '')
-                fullname = ( lastname.upper() if lastname else '' ) + ( ", " + ' '.join( map( str, map( lambda w:w.capitalize(), firstname.split() ) ) ) if firstname else '' )
+                fullname=(lastname.upper() if lastname else '') + (", " +firstname.capitalize() if firstname else '')
+                #fullname = ( lastname.upper() if lastname else '' ) + ( ", " + ' '.join( map( str, map( lambda w:w.capitalize(), firstname.split() ) ) ) if firstname else '' )
             res[m.id] = fullname
         return res
 
@@ -164,6 +165,7 @@ class res_partner( osv.osv ):
         @Returns: list of pairs (id,text_repr) for all records with the given ids.
         """
         _logger.info( 'in name_get of res.partner model ...' )
+        
         if context is None:
             context = {}
         if isinstance( ids, ( int, long ) ):

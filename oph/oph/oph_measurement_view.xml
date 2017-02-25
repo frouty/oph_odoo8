@@ -360,7 +360,7 @@
         </record>
         <!-- ACTION POUR LE BOUTTON LogRefraction --> 
         <record model="ir.actions.act_window" id="logrefraction_action_id">
-                <field name="name">logrefration</field>
+                <field name="name">logrefraction</field>
                 <field name="src_model">calendar.event</field>
                 <field name="res_model">oph.measurement</field>
                 <field name="view_mode">tree,form</field>
