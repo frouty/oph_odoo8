@@ -1,7 +1,7 @@
 # res.partner
 -[ ] onglet sales & purchase mettre le champ pour la liste de prix.
 
--[X] je ne peux pas entrer des caractères accentués dans le prénom.
+-[X] Pouvoir entrer des caractères accentués dans le prénom.
 
 pour obtenir l'encodage:
 
@@ -71,3 +71,9 @@ essayer quelque chose du genre:
 
 # oph.measurement tree view
 - [ ] la date de la consultation ne s'affiche pas.
+
+# faire un copie automatique de or to ol pour les champs:
+- [ ] M
+- [ ] P
+
+# faire un lien entre l'objet calendar.event et l'objet invoice.invoice
