@@ -4,8 +4,86 @@ TODO fix the problem for 0 sphere, cyl, axis
 """
 import re, os
 import logging
+import paramiko
+import itertools
+from netifaces import interfaces, ifaddresses, AF_INET
 
 _logger = logging.getLogger(__name__)
+
+# log path to file with datas on the remote host
+# is define in listener_rt5100
+# outputfile : log_path = '/home/lof/rt5100rs232/tmp.log'
+log_path = '/home/pi/tmp.log'  # hackme
+
+# # Connect to remote host to fetch rt5100 datas
+ssh_client = paramiko.SSHClient()
+
+# # Autoaccept unknown inbound host keys
+# # do this if you trust the remote machine
+ssh_client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+
+# # client IP
+# hackme with the IP of the raspberry
+# now there is many IP_client so I can't use IP_client like that anymore
+#IP_client='192.168.1.100'
+# at work IP_client = '192.168.2.130'
+
+## ----- ##
+# quand il y aura plusieurs ophtalmologistes, 
+# il y aura plusieurs rt5100
+# il faudra qu'odoo lise dans le bon raspberry
+# Je pense qu'il faut mapper entre l'adress IP du client odoo et l'adresse IP du raspberry
+# pour le faire 
+# 1 get ip du client odoo
+#===============================================================================
+# import itertools
+# from netifaces import interfaces, ifaddresses, AF_INET
+# 
+# links = filter(None, (ifaddresses(x).get(AF_INET) for x in interfaces()))
+# links = itertools.chain(*links)
+# ip_addresses = [x['addr'] for x in links]
+# return : ip_addresses
+# ['127.0.0.1', '192.168.1.121']
+
+#===============================================================================
+# le mapping : rt5100_map = {'ipclient1':'ipraspclient1','ipclient2':'ipraspclient2'}
+# iprasp=rt5100_map[ip_adresses[1]]
+
+# le mapping
+# ATTENTION CONFIGURER LES PC ET LES RAPSBERRY en STATIC IP
+# hackme depending on your configuration.
+
+rt5100_map = {'192.168.1.121':'192.168.1.100','ipclient2':'ipraspclient2'}
+
+links = filter(None, (ifaddresses(x).get(AF_INET) for x in interfaces()))
+links = itertools.chain(*links)
+ip_addresses = [x['addr'] for x in links]
+
+IP_client = rt5100_map[ip_addresses[1]]
+_logger.info('IP raspberry is: %s', IP_client)
+
+try:
+
+    ssh_client.connect(IP_client,  # hackme for new install
+                                username = 'pi',
+                                password = 'rt5100')
+
+#===============================================================================
+# on ODOO server it should be
+# ssh_client.connect('192.168.2.130',  # hackme
+#                                  username = 'pi',
+#                                  password = 'rt5100')
+#===============================================================================
+
+except paramiko.SSHException:
+    print "connection failed"
+    quit()
+sftp_client = ssh_client.open_sftp()
+
+
+
+
+## ---- ## 
 cuttingSCA = [0, 2, 8, 14, 17]
 cuttingADD = [0, 2, 8]
 cuttingVA = [0, 2, 7]
