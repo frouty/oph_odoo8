@@ -46,14 +46,17 @@ ssh_client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
 # ['127.0.0.1', '192.168.1.121']
 
 #===============================================================================
-# le mapping : rt5100_map = {'ipclient1':'ipraspclient1','ipclient2':'ipraspclient2'}
+# le mapping : rt5100_map = {'ipclientodoo1':'ipraspberryduclientodoo1','ipclient2':'ipraspclient2'}
 # iprasp=rt5100_map[ip_adresses[1]]
 
 # le mapping
 # ATTENTION CONFIGURER LES PC ET LES RAPSBERRY en STATIC IP
-# hackme depending on your configuration.
+# hackme depending on your configuration.*
 
-rt5100_map = {'192.168.1.121':'192.168.1.100','ipclient2':'ipraspclient2'}
+# on pourrait imaginer une table de correspondance par mac address.
+# avec une table en odoo.
+
+rt5100_map = {'192.168.1.10':'192.168.1.50','ipclient2':'ipraspclient2'}
 
 links = filter(None, (ifaddresses(x).get(AF_INET) for x in interfaces()))
 links = itertools.chain(*links)

@@ -1,87 +1,149 @@
 # -*- coding: utf-8 -*-
+import logging
 from datetime import datetime, timedelta, date
 from openerp.osv import fields, osv, orm
-from openerp import fields as new_fields, models, api, _
+from openerp.tools.translate import _
 import arrow
 import inspect
-# import numpy as np
+import numpy as np
 import pytz
 import time
 import rt5100 as rt
 
-import logging
-_logger = logging.getLogger( __name__ )
+_logger = logging.getLogger(__name__)
 
-
-class oph_motive( models.Model ):
-    """Motives for a calendar.motive"""
+class oph_motive(orm.Model):
+    """Motives for a crm.meeting"""
     _name = 'oph.motive'
 
-    name = new_fields.Char()
-    comment = new_fields.Text()
+    _columns = {
+              'name':fields.char('Name', size = 32,),
+              'comment':fields.text('Comment'),
+              }
     _sql_constraints = [
-                      ( 'name_uniq', 'unique(name)', 'The motive must be unique.' ),
+                      ('name_uniq', 'unique(name)', 'The motive must be unique.'),
                       ]
 
-class calendar_event( orm.Model ):
-    _inherit = "calendar.event"
+class crm_meeting(orm.Model):
+    _inherit = "crm.meeting"
     _description = "consultations meetings"
-    # _order = "date asc"
-    _order = "start_date asc"
+    _order = "date asc"
 
-    def get_rt5100( self, cr, uid, ids, context = None ):
+    def get_rt5100(self, cr, uid, ids, context = None):
         """Get the datas from the RT-5100
-        """
-        _logger.info( 'in get_rt5100 ...' )
-        print 'IN GET_RT5100'
-        print 'context:{}'.format( context )
-        print "check I can import methods from rt5100"
-        print 'SCADict:{}'.format( rt.SCAdict )
         
-        finalDict = rt.getandformat_values()
-        print 'getandformat_value:{}'.format( finalDict )
-        finalDict = rt.map2odoofields( finalDict )
-        print 'map2odoofields: {}'.format( finalDict )
-        finalDict = rt.mergeADD2SCA( finalDict )
-        print 'mergeADD2SCA: {}'.format( finalDict )
-        finalDict = rt.substitute( finalDict )
-        print 'substitute: {}'.format( finalDict )
-        print "final dict is :  {}".format( finalDict )
+        """
+        _logger.info("in ge_rt5100 method of class crm.meeting")
+        _logger.info('context:{}')
+        _logger.info("check that I can import methods from rt5100")
+        _logger.info('cuttingDict:%s' % (rt.cuttingDict,))
+
+        finalDict = rt.map2odoofields()
+        _logger.info("finalDict:%s", finalDict)
+        #
+
         for va_type in finalDict.keys():
-            records = self.browse( cr, uid, ids, context )
+            records = self.browse(cr, uid, ids, context)
             for record in records:
-                print 'record.name:{}'.format( record.name )
-                print 'record.partner_id:{}'.format( record.partner_id )
-                print 'record.meeting_id:{}'.format( record.id )
+                _logger.info('record.name:%s', record.name)
+                _logger.info('record.partner_id:%s', record.partner_id)
+                _logger.info('record.meeting_id:%s', record.id)
                 val_measurement = {'va_type':va_type,
-                                              'type_id':2,
-                                              'meeting_id':record.id,
-                                              }
-                for k, v in finalDict[va_type].items():
-                    val_measurement.update( {k:v} )
-                oph_measurement_obj = self.pool.get( 'oph.measurement' ).create( cr, uid, val_measurement, context = context )
+                                   'type_id':2,  # 2 is the ID for all about refraction and visual acuity.
+                                   'meeting_id':record.id,
+                                   }
+                _logger.info('val_measurement:%s', val_measurement)
+                _logger.info('finalDict[va_type]:%s', finalDict[va_type])
+
+                for i in finalDict[va_type]:
+                    _logger.info('i:%s', i)
+                    val_measurement.update(i)
+                    _logger.info('val_measurement:%s', val_measurement)
+                
+                
+                # fix axis set to None for axix = 0°
+                    # set axis back to 0 when cyl is not None
+                    #OR
+                    _logger.info('In the fix for OR')           
+                    if val_measurement.get('cyl_od') is not None and val_measurement.get('axis_od') is None:
+                        val_measurement.update({'axis_od':'0'})
+                    #OS
+                    _logger.info('In the fix for OS')
+                    if val_measurement.get('cyl_os') is not None and val_measurement.get('axis_os') is None:
+                        val_measurement.update({'axis_os':'0'})
+
+                # compute the field sph_near_vision, cyl_near_vision, axis_near_vision
+                # and add those new values in FinalDict
+                # for va_type == Rx
+                _logger.info('val_measurement before near vision values:%s', val_measurement)
+                if va_type == 'Rx':
+                    _logger.info('va_type:%s', va_type)
+                    if val_measurement.get('cyl_od') is not None:
+                        val_measurement.update({'cyl_near_or':val_measurement.get('cyl_od')})
+                    if val_measurement.get('axis_od') is not None:
+                        val_measurement.update({'axis_near_or':val_measurement.get('axis_od')})
+                    if val_measurement.get('cyl_os') is not None:
+                        val_measurement.update({'cyl_near_os':val_measurement.get('cyl_os')})
+                    if val_measurement.get('axis_os') is not None:
+                        val_measurement.update({'axis_near_os':val_measurement.get('axis_os')})
+                    
+                    
+                        
+                    # compute sph_near
+                    # OR
+                    if val_measurement.get('add_od')is not None:
+                        if val_measurement.get('sph_od') is not None:
+                            _logger.info("val_measurement.get('sph_od') is:%s", val_measurement.get('sph_od'))
+                            sph_near = float(val_measurement.get('add_od')) + float(val_measurement.get('sph_od'))
+                            if sph_near < 0:
+                                sph_near = str(sph_near)
+                            else:
+                                sph_near = '+' + str(sph_near)
+                        else:
+                            sph_near = str(val_measurement.get('add_od'))
+                        val_measurement.update({'sph_near_or':sph_near})
+                    # OG
+                    if val_measurement.get('add_os'):
+                        if val_measurement.get('sph_os'):
+                            sph_near = float(val_measurement.get('add_os')) + float(val_measurement.get('sph_os'))
+                            if sph_near < 0:
+                                sph_near = str(sph_near)
+                            else:
+                                sph_near = '+' + str(sph_near)
+                        else:
+                            sph_near = str(val_measurement.get('add_os'))
+                        val_measurement.update({'sph_near_os':sph_near})
+
+                _logger.info('val_measurement with near vision values:%s', val_measurement)
+
+
+
+                oph_measurement_obj = self.pool.get('oph.measurement').create(cr, uid, val_measurement, context = context)
         return True
 
-    def selection_partner_id( self, cr, uid, ids, context = None ):
-        """ Get the partner_id from the res.partner to write it in the calendar.event record
+
+
+    def selection_partner_id(self, cr, uid, ids, context = None):
+        """
+        Get the partner_id from the res.partner to write it in the crm.meeting record
         """
         res = {}
         fmt = 'YYYY-MM-DD HH:mm:ss'
-        # from pdb import set_trace;set_trace()
-        # print "PASSING IN: %s CONTEXT IS: %s" % (inspect.stack()[0][3], context)
-        self.write( cr, uid, ids, {'partner_id':context.get( 'partner_id' ), 'given_date':arrow.now().to( 'UTC' ).format( fmt ), 'user_id':uid}, context = None )
+        print "PASSING IN: %s CONTEXT IS: %s" % (inspect.stack()[0][3], context)
+        self.write(cr, uid, ids, {'partner_id':context.get('default_partner_id'), 'given_date':arrow.now().to('UTC').format(fmt), 'user_id':uid}, context = None)
         # set state to busy
-        self.statechange_busy( cr, uid, ids, context )
+        self.statechange_busy(cr, uid, ids, context)
         return res
- 
-    def default_get( self, cr, uid, fields, context = None ):
+
+    def default_get(self, cr, uid, fields, context = None):
         """ Surcharge la valeur par defaut de la durée d'un RDV"""
-        res = super( calendar_event, self ).default_get( cr, uid, fields, context = context )
-        res['duration'] = 0.25  # 1/4d'heure
+        res = super(crm_meeting, self).default_get(cr, uid, fields, context = context)
+        res['duration'] = 0.25
         return res
- 
-    def onchange_slot( self, cr, uid, ids, state, date, duration, organizer, context = None ):
-        """This method to check and avoid creating slot when it's not desirable
+
+    def onchange_slot(self, cr, uid, ids, state, date, duration, organizer, context = None):
+        """
+        This method to check and avoid creating slot when it's not desirable
         We start by searching the closed slot.
         """
         if context == None:
@@ -89,63 +151,81 @@ class calendar_event( orm.Model ):
         # slot_ids = self.search(cr, uid, [('state', 'in', (('close',)))])# récupere tous les records close OK
         res = {'value': {}}
         print "PASSING through", inspect.stack()[0][3]
-        print "STATE, DATE, DURATION, ORGANIZER: %s, %s, %s, %s" % ( state, date, duration, organizer )
-        slot_ids = self.search( cr, uid, [( 'start_date', '=', date )] )
+        print "STATE, DATE, DURATION, ORGANIZER: %s, %s, %s, %s" % (state, date, duration, organizer)
+        slot_ids = self.search(cr, uid, [('date', '=', date)])
         print "RESULT OF SEARCH:", slot_ids
-        for record in self.browse( cr, uid, slot_ids, context = context ):
-            print "RECORD DATE IS;", record.start_datetime
-            print "DATE_DEADLINE IS", record.stop_datetime
+        for record in self.browse(cr, uid, slot_ids, context = context):
+            print "RECORD DATE IS;", record.date
+            print "DATE_DEADLINE IS", record.date_deadline
             print "PARTNER NAME:", record.partner_id.name
         if slot_ids:
-            warning = {
-         'title': _( "Warning for a close slot" ),
-         'message': _( "Well are you sure you want to add a slot" ),
+           warning = {
+         'title': _("Warning for a close slot"),
+         'message': _("Well are you sure you want to add a slot"),
          }
-            return {'value': res.get( 'value', {} ), 'warning':warning}
+           return {'value': res.get('value', {}), 'warning':warning}
         return {'value': {}}
- 
-    def onchange_partner_id( self, cr, uid, ids, state, given_date, context = None ):
+
+    def onchange_partner_id(self, cr, uid, ids, state, given_date, context = None):
         """
         Set state to busy when partner_id not empty
         Set given_date is date when the appointement is given
         Set user_id to the user who give the appointment
         """
-        print "PASSING IN: %s CONTEXT IS: %s" % ( inspect.stack()[0][3], context )
-        foo = self.read( cr, uid, ids, fields = ['write_date', ], context = context, load = '_classic_read' )
+        print "PASSING IN: %s CONTEXT IS: %s" % (inspect.stack()[0][3], context)
+        foo = self.read(cr, uid, ids, fields = ['write_date', ], context = context, load = '_classic_read')
         fmt = 'YYYY-MM-DD HH:mm:ss'
-        return {'value':{'state':'busy', 'given_date':arrow.now().to( 'UTC' ).format( fmt ), 'user_id':uid}}
+        return {'value':{'state':'busy', 'given_date':arrow.now().to('UTC').format(fmt), 'user_id':uid}}
+
+    def onchange_dates(self, cr, uid, ids, start_date, duration = False, end_date = False, allday = False, context = None):
+       res = super(crm_meeting, self).onchange_dates(cr, uid, ids, start_date, duration = duration, end_date = end_date, allday = allday, context = context)
+       slot_ids = self.search(cr, uid, [('date', '=', start_date)])
+       if slot_ids:
+           res.update({'warning': {
+                                'title': _("Warning for a close slot"),
+                                'message': _("Well are you sure you want to add a slot"),
+                     }})
+       return res
 
     #===========================================================================
-    #  A REVOIR NE MARCHE PAS EN 80 TEL QUEL TODO
-    # def onchange_dates(self, cr, uid, ids, start_date, duration = False, end_date = False, allday = False, context = None):
-    #    res = super(calendar_event, self).onchange_dates(cr, uid, ids, start_date, duration = duration, end_date = end_date, allday = allday, context = context)
-    #    slot_ids = self.search(cr, uid, [('date', '=', start_date)])
-    #    if slot_ids:
-    #        res.update({'warning': {
-    #                             'title': _("Warning for a close slot"),
-    #                             'message': _("Well are you sure you want to add a slot"),
-    #                  }})
-    #    return res
+    # def _get_status_agenda(self, cursor, user_id, context = None):
+    #     return (
+    #             ('draft', _('Draft')),
+    #             ('cs', _('Consultation')),
+    #             ('tech', _('Technique')),
+    #             ('open', _('Open')),
+    #             ('busy', _('Busy')),
+    #             ('close', _('Close')),
+    #             ('cancel', _('Cancel')),
+    #             ('no_show', _('No Show')),
+    #             ('wait', _('Wait')),
+    #             ('nwnm', _('No Wait')),
+    #             ('in', _('In')),
+    #             ('in_between', _('In Between')),
+    #             ('done', 'Out'),
+    #             ('office', _('Office')),  # pourquoi devoir rajouter cette valeur
+    #             )
     #===========================================================================
 
-    def statechange_draft( self, cr, uid, ids, context = None ):
-        self.write( cr, uid, ids, {"state": "draft"}, context = context )
+    def statechange_draft(self, cr, uid, ids, context = None):
+        self.write(cr, uid, ids, {"state": "draft"}, context = context)
         return True
-    def statechange_open( self, cr, uid, ids, context = None ):
-        self.write( cr, uid, ids, {"state": "open"}, context = context )
+    def statechange_open(self, cr, uid, ids, context = None):
+        self.write(cr, uid, ids, {"state": "open"}, context = context)
         return True
-    def statechange_close( self, cr, uid, ids, context = None ):
-        self.write( cr, uid, ids, {"state": "close"}, context = context )
+    def statechange_close(self, cr, uid, ids, context = None):
+        self.write(cr, uid, ids, {"state": "close"}, context = context)
         return True
-    def statechange_cancel( self, cr, uid, ids, context = None ):
+    def statechange_cancel(self, cr, uid, ids, context = None):
         """
-        Set the state of calendar.event record to cancel
-        and create a new calendar.event lot
-        with the cancel calendar.event
+        Set the state of crm.meeting record to cancel
+        and create a new crm.meeting lot
+        with the cancel crm.meeting
         """
-        self.write( cr, uid, ids, {"state": "cancel"}, context = context )
-        vals = self.read( cr, uid, ids, fields = ['start_datetime', 'duration', 'stop_datetime', 'tag' ], context = context, load = '_classic_read' )
-        # from pdb import set_trace;set_trace()
+        self.write(cr, uid, ids, {"state": "cancel"}, context = context)
+        vals = self.read(cr, uid, ids, fields = ['date', 'duration', 'date_deadline', 'tag' ], context = context, load = '_classic_read')
+        # vals est une liste de dictionnaire avec les données des records
+       # from pdb import set_trace;set_trace()
         for record in vals:  # on boucle sur les données des record retournées.
         # record est un dictionnaire
         # comment récupérer le statut cs ou technique? C'est tag
@@ -153,82 +233,83 @@ class calendar_event( orm.Model ):
         # il nous faut supprimer la clef "id" qui est systématiquement fournie dans le return de read
             del record['id']
             # del context['default_partner_id']
-            record.update( {'name':'Ouvert', 'state':record['tag'], 'partner_id':False} )
-            self.create( cr, uid, record, context = context )
+            record.update({'name':'Ouvert', 'state':record['tag'], 'partner_id':False})
+            self.create(cr, uid, record, context = context)
         return True
 
-    def statechange_in( self, cr, uid, ids, context = None ):
-        self.write( cr, uid, ids, {"state": "in"}, context = context )
+    def statechange_in(self, cr, uid, ids, context = None):
+        self.write(cr, uid, ids, {"state": "in"}, context = context)
         return True
-
-    def statechange_in_between( self, cr, uid, ids, context = None ):
-        self.write( cr, uid, ids, {"state": "in_between"}, context = context )
+    def statechange_in_between(self, cr, uid, ids, context = None):
+        self.write(cr, uid, ids, {"state": "in_between"}, context = context)
         return True
-
-    def statechange_out( self, cr, uid, ids, context = None ):
+    def statechange_out(self, cr, uid, ids, context = None):
         if context is None:
             context = {}
         # set meeting to close
-        self.write( cr, uid, ids, {"state": "done"}, context = context )
+        self.write(cr, uid, ids, {"state": "done"}, context = context)
         # return True #uncomment if just want the change state to out
         # get info for the quotation
-        meeting = self.browse( cr, uid, ids[0], context = context )  # comment if you don't want to open a quotation view
-        # pricelist = part.property_product_pricelist and part.property_product_pricelist.id or False
+        meeting = self.browse(cr, uid, ids[0], context = context)  # comment if you don't want to open a quotation view
+       # pricelist = part.property_product_pricelist and part.property_product_pricelist.id or False
         res = {'default_partner_id': meeting.partner_id.id,
                'default_pricelist_id': meeting.partner_id.property_product_pricelist.id,
-               'default_date_acte':meeting.start_date,
+               'default_date_acte':meeting.datewotime,
                'default_origin':'Office',
                }
+
         return {  # Comment if you don't want to open a quotation view
-            'name': _( 'Bla bla' ),
+            'name': _('Bla bla'),
             'view_type': 'form',
             'view_mode': 'form',
             'res_model': 'sale.order',
+            # 'context': "{'default_partner_id': %s}" % (meeting.partner_id.id,),
+            # 'context': "{'default_partner_id': %s, 'default_date_acte':%s}" % (meeting.partner_id.id, meeting.datewotime),
             'context':res,
             'type': 'ir.actions.act_window',
             'target': 'current',
         }
-        
-    def statechange_free( self, cr, uid, ids, context = None ):
-        self.write( cr, uid, ids, {"state": "done", "free":True}, context = context )
+
+    def statechange_free(self, cr, uid, ids, context = None):
+        self.write(cr, uid, ids, {"state": "done", "free":True}, context = context)
         return True
- 
-    def statechange_no_show( self, cr, uid, ids, context = None ):
-        self.write( cr, uid, ids, {"state": "no_show"}, context = context )
+
+    def statechange_no_show(self, cr, uid, ids, context = None):
+        self.write(cr, uid, ids, {"state": "no_show"}, context = context)
         return True
- 
-    def statechange_busy( self, cr, uid, ids, context = None ):
-        self.write( cr, uid, ids, {"state": "busy"}, context = context )
+
+    def statechange_busy(self, cr, uid, ids, context = None):
+        self.write(cr, uid, ids, {"state": "busy"}, context = context)
         return True
- 
-    def statechange_wait( self, cr, uid, ids, context = None ):
-        self.write( cr, uid, ids, {"state": "wait"}, context = context )
+
+    def statechange_wait(self, cr, uid, ids, context = None):
+        self.write(cr, uid, ids, {"state": "wait"}, context = context)
         return True
- 
-    def statechange_nwnm( self, cr, uid, ids, context = None ):
-        self.write( cr, uid, ids, {"state": "nwnm"}, context = context )
+
+    def statechange_nwnm(self, cr, uid, ids, context = None):
+        self.write(cr, uid, ids, {"state": "nwnm"}, context = context)
         return True
- 
-    #===========================================================================
-    # def _get_datewotime(self, cr, uid, ids, field_name, arg, context = {}):
-    #     """will get the date without timestamp from date
-    #     giving possibility to search by date 
-    #     """
-    #     res = {}
-    #     if context is None:
-    #         context = {}
-    #     fmt = '%Y-%m-%d %H:%M:%S'  # set format. Adapted to the format of stored dates in postgresql
-    #     local_tz = pytz.timezone(context.get('tz', 'Pacific/Noumea'))  # get tz from context
-    #     records = self.browse(cr, uid, ids, context)
-    #     for record in records:
-    #         wd = datetime.strptime(record.start_date, fmt,)  # convert string date from database to datetime py object
-    #         wd = pytz.UTC.localize(wd)  # make aware datetime object needed for astimezone()
-    #         wd = wd.astimezone(local_tz)  # convert UTC time to local time
-    #         res[record.id] = wd.date()
-    #     return res
-    #===========================================================================
- 
-    def _format_fullmotive( self, cr, uid, ids, name, args, context = None ):
+
+    def _get_datewotime(self, cr, uid, ids, field_name, arg, context = {}):
+        """
+        will get the date without timestamp from date
+        giving possibility to search by date 
+        """
+        res = {}
+        if context is None:
+            context = {}
+        fmt = '%Y-%m-%d %H:%M:%S'  # set format. Adapted to the format of stored dates in postgresql
+        local_tz = pytz.timezone(context.get('tz', 'Pacific/Noumea'))  # get tz from context
+        records = self.browse(cr, uid, ids, context)
+        for record in records:
+            wd = datetime.strptime(record.date, fmt,)  # convert string date from database to datetime py object
+            wd = pytz.UTC.localize(wd)  # make aware datetime object needed for astimezone()
+            wd = wd.astimezone(local_tz)  # convert UTC time to local time
+            res[record.id] = wd.date()
+            # print "In _GET_DATEWOTIME. res is: %s" % res
+        return res
+
+    def _format_fullmotive(self, cr, uid, ids, name, args, context = None):
         """
         Concatenate the motive and motive comment 
         to get the fullmotive
@@ -236,89 +317,83 @@ class calendar_event( orm.Model ):
         and get real information for patient motive
         """
         res = {}
-        for br in self.browse( cr, uid, ids, context = None ):
+        for br in self.browse(cr, uid, ids, context = None):
             motive = br.motive.name or ''
             motivecomment = br.motive_comment or ''
             fullmotive = motive + ' ' + motivecomment
             res[br.id] = fullmotive
         return res
-  
+
     _columns = {
-                'subject':fields.char( 'Subject', size = 128, help = "Object of the meeting", ),  # not sure it's usefull
-                'motive':fields.many2one( 'oph.motive', 'Motive', ),
-                'motive_comment':fields.char( 'Comment', size = 128, help = 'Comment to precise the motive' ),
-                'fullmotive':fields.function( _format_fullmotive, type = 'char', size = 128, string = 'Full Motive', store = True, method = True ),
-                'chief_complaint':fields.text( 'Chief Complaint' ),
-                'state': fields.selection( [
-                                                    ( 'draft', _( 'Draft' ) ),
-                                                    ( 'cs', _( 'Consultation' ) ),
-                                                    ( 'tech', _( 'Technique' ) ),
-                                                    ( 'open', _( 'Open' ) ),
-                                                    ( 'busy', _( 'Busy' ) ),
-                                                    ( 'close', _( 'Close' ) ),
-                                                    ( 'cancel', _( 'Cancel' ) ),
-                                                    ( 'no_show', _( 'No Show' ) ),
-                                                    ( 'wait', _( 'Wait' ) ),
-                                                    ( 'nwnm', _( 'No Wait' ) ),
-                                                    ( 'in', _( 'In' ) ),
-                                                    ( 'in_between', _( 'In Between' ) ),
-                                                    ( 'done', 'Out' ),
-                                                    ( 'office', _( 'Office' ) )
-                                                    ], readonly = False ),
-                'partner_id':fields.many2one( 'res.partner', 'Partner', ),  # patient appointment
-                'tono_ids':fields.one2many( 'oph.measurement', 'meeting_id', 'Tonometry', domain = [( 'type_id.code', '=', 'tono' )] ),
-                'refraction_ids':fields.one2many( 'oph.measurement', 'meeting_id', 'Refraction', domain = [( 'type_id.code', '=', 'ref' )] ),
-                'keratometry_ids':fields.one2many( 'oph.measurement', 'meeting_id', 'Keratometry', domain = [( 'type_id.code', '=', 'ker' )] ),
-                'va_ids':fields.one2many( 'oph.measurement', 'meeting_id', 'Visual Acuity', domain = [( 'type_id.code', '=', 'va' )] ),
-                'sle_ids':fields.one2many( 'oph.measurement', 'meeting_id', 'Slit Lamp Exam', domain = [( 'type_id.code', '=', 'sle' )] ),
-                'pachy_ids':fields.one2many( 'oph.measurement', 'meeting_id', 'Center Corneal Thickness', domain = [( 'type_id.code', '=', 'pachy' )] ),
-               # 'datewotime':fields.function(_get_datewotime, method = True, type = 'date', string = 'DateWOtime', store = True),
-                'todo_list_ids':fields.one2many( 'oph.todolist', 'meeting_id', 'TODO', ),
-                'medication_line_ids':fields.one2many( 'oph.medication.line', 'meeting_id', 'Medication Line' ),
-                'reporting_line_ids':fields.one2many( 'oph.reporting', 'meeting_id', 'Reporting Line' ),
-                'conclusion_ids':fields.one2many( 'oph.measurement', 'meeting_id', 'Conclusion Line', domain = [( 'type_id.code', '=', 'conc' )] ),
-                'miscellaneous_ids':fields.one2many( 'oph.measurement', 'meeting_id', 'Miscellaneous informations', domain = [( 'type_id.code', '=', 'misc' )] ),
-                'tag':fields.selection( [
-                                        ( 'close', 'Close' ),  # je le garde mais je pense qu'il ne faut pas l'utiliser on utilisear plutot le close de state
-                                        ( 'office', _( 'Office' ) ),
-                                        ( 'or', _( 'OR' ) ),
-                                        ( 'cs', _( 'Consultation' ) ),  # Add for persistence usefull for change to cancel.So when cancelled you keep track of tag to rebuild a new slot with same tag.
-                                        ( 'tech', _( 'Technique' ) ),  # Add for persistence usefull for change to cancel
-                                        ], 'Tag', select = True, readonly = True ),
-                'free':fields.boolean( 'Free', help = 'True if not invoiced' ),  # for free consultation
-                'neuro':fields.text( 'Neuro Observation' ),
-                'mh':fields.text( 'Medical History' ),
-                'pricelist':fields.related( 'partner_id', 'property_product_pricelist', type = 'many2one', relation = 'product.pricelist', string = 'Pricelist', store = False ),
-                'given_date':fields.datetime( 'Given Date', help = 'Date when the appointement is given to the partner' ),
+                'subject':fields.char('Subject', size = 128, help = "Object of the meeting",),  # not sure it's usefull
+                'motive':fields.many2one('oph.motive', 'Motive',),
+                'motive_comment':fields.char('Comment', size = 128, help = 'Comment to precise the motive'),
+                'fullmotive':fields.function(_format_fullmotive, type = 'char', size = 128, string = 'Full Motive', store = True, method = True),
+                'chief_complaint':fields.text('Chief Complaint'),
+                'state': fields.selection([
+                                                    ('draft', _('Draft')),
+                                                    ('cs', _('Consultation')),
+                                                    ('tech', _('Technique')),
+                                                    ('open', _('Open')),
+                                                    ('busy', _('Busy')),
+                                                    ('close', _('Close')),
+                                                    ('cancel', _('Cancel')),
+                                                    ('no_show', _('No Show')),
+                                                    ('wait', _('Wait')),
+                                                    ('nwnm', _('No Wait')),
+                                                    ('in', _('In')),
+                                                    ('in_between', _('In Between')),
+                                                    ('done', 'Out'),
+                                                    ('office', _('Office'))], readonly = False),
+                'partner_id':fields.many2one('res.partner', 'Partner',),
+                'tono_ids':fields.one2many('oph.measurement', 'meeting_id', 'Tonometry', domain = [('type_id.code', '=', 'tono')]),
+                'refraction_ids':fields.one2many('oph.measurement', 'meeting_id', 'Refraction', domain = [('type_id.code', '=', 'ref')]),
+                'keratometry_ids':fields.one2many('oph.measurement', 'meeting_id', 'Keratometry', domain = [('type_id.code', '=', 'ker')]),
+                'va_ids':fields.one2many('oph.measurement', 'meeting_id', 'Visual Acuity', domain = [('type_id.code', '=', 'va')]),
+                'sle_ids':fields.one2many('oph.measurement', 'meeting_id', 'Slit Lamp Exam', domain = [('type_id.code', '=', 'sle')]),
+                'pachy_ids':fields.one2many('oph.measurement', 'meeting_id', 'Center Corneal Thickness', domain = [('type_id.code', '=', 'pachy')]),
+                'datewotime':fields.function(_get_datewotime, method = True, type = 'date', string = 'DateWOtime', store = True),
+                'todo_list_ids':fields.one2many('oph.todolist', 'meeting_id', 'TODO',),
+                #===============================================================
+                'medication_line_ids':fields.one2many('oph.medication.line', 'meeting_id', 'Medication Line'),
+                # cut/paste to inherit class crm.meeting cf oph_prescription.py
+                #===============================================================
+                'reporting_line_ids':fields.one2many('oph.reporting', 'meeting_id', 'Reporting Line'),
+                'conclusion_ids':fields.one2many('oph.measurement', 'meeting_id', 'Conclusion Line', domain = [('type_id.code', '=', 'conc')]),
+                'miscellaneous_ids':fields.one2many('oph.measurement', 'meeting_id', 'Miscellaneous informations', domain = [('type_id.code', '=', 'misc')]),
+                'tag':fields.selection([
+                                        ('office', _('Office')),
+                                        ('or', _('OR')),
+                                        ('cs', _('Consultation')),  # Add for persistence usefull for change to cancel
+                                        ('tech', _('Technique')),  # Add for persistence usefull for change to cancel
+                                        ], 'Tag', select = True, readonly = True),
+                'free':fields.boolean('Free', help = 'True if not invoiced'),  # for free consultation
+                'neuro':fields.text('Neuro Observation'),
+                'mh':fields.text('Medical History'),
+                # 'allergia':fields.one2many('oph.allergen', 'meeting_id', 'Allergia'),
+                'pricelist':fields.related('partner_id', 'property_product_pricelist', type = 'many2one', relation = 'product.pricelist', string = 'Pricelist', store = False),
+                'given_date':fields.datetime('Given Date', help = 'Date when the appointement is given to the partner'),
                 }
-#  
-#     _defaults = {
-#                  'state': 'open',  # TODO is it OK
-#                  'name': 'RDV',
-#                  'duration' : 0.25,
-#                  'tag':'cs',
-#                  'free':False }
-#  
-#     def unlink(self, cr, uid, ids, context = None):
-#         for meeting in self.browse(cr, uid, ids, context = context):
-#             if meeting.state not in ('draft', 'open'):
-#                 raise osv.except_osv(_('Error!'), _('Impossible to delete a meeting not in draft state  or open!'))
-#         return super(crm_meeting, self).unlink(cr, uid, ids, context = context)
-#  
-# class oph_measurement(orm.Model):
-#     _inherit = "oph.measurement"
-#     _columns = {
-#                 'chief_complaint':fields.related('meeting_id', 'chief_complaint', type = 'char', string = 'Chief Complaint',),
-#                 'motive':fields.related('meeting_id', 'motive', type = 'many2one', relation = 'oph.motive', store = True, string = "Motive"),
-#                 }
 
-    def check_partners_email( self, cr, uid, partner_ids, context = None ):
-        """Surcharge la méthode check_partner_email
-        
-        Je me fiche que le patient n'ait pas d'email
-        """
-        res = super( calendar_event, self ).check_partners_email( cr, uid, partner_ids, context = None )
-        return {}
+    _defaults = {
+                 'state': 'open',  # TODO is it OK
+                 'name': 'RDV',
+                 'duration' : 0.25,
+                 'tag':'cs',
+                 'free':False }
 
+    def unlink(self, cr, uid, ids, context = None):
+        for meeting in self.browse(cr, uid, ids, context = context):
+            if meeting.state not in ('draft', 'open'):
+                raise osv.except_osv(_('Error!'), _('Impossible to delete a meeting not in draft state  or open!'))
+        return super(crm_meeting, self).unlink(cr, uid, ids, context = context)
+
+class oph_measurement(orm.Model):
+    _inherit = "oph.measurement"
+    _columns = {
+                'chief_complaint':fields.related('meeting_id', 'chief_complaint', type = 'char', string = 'Chief Complaint',),
+                'motive':fields.related('meeting_id', 'motive', type = 'many2one', relation = 'oph.motive', store = True, string = "Motive"),
+                }
+# '
+             #
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
-#===============================================================================
