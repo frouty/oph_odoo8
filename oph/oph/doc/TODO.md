@@ -25,6 +25,10 @@ sys.getdefaultencoding()
 
 - [x] Effacer le boutton *Opportunities*
 
+# Sales / Meeting
+- [ ] Mise en place de la possibilité de donner un rendez vous à un patient.
+- [ ] insertion de la commande 'inject'
+ 
 # Faciliter ou éviter la saisie du nom de la banque pour les cheques
 - dans res.partner / onglet accounting / champ bank_ids. C'est là qu'il faudrait renseigner cette information. Mais y a deux champs qui sont à required = True inutile pour moi.
 C'est dans l'objet res.partner.bank 
