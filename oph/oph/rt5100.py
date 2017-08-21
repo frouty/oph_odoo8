@@ -53,7 +53,7 @@ ssh_client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
 # ATTENTION CONFIGURER LES PC ET LES RAPSBERRY en STATIC IP
 # hackme depending on your configuration.
 
-rt5100_map = {'192.168.1.121':'192.168.1.100','ipclient2':'ipraspclient2'}
+rt5100_map = {'192.168.1.10':'192.168.1.50','ipclient2':'ipraspclient2'}
 
 links = filter(None, (ifaddresses(x).get(AF_INET) for x in interfaces()))
 links = itertools.chain(*links)

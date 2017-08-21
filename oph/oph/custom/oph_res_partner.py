@@ -53,6 +53,7 @@ class res_partner( osv.osv ):
 #                      'message':_( 'You must choose a gender', )
 #                      }
 #             return {'warning':warning, }
+        else : return True
         return {'value':{'title':ID[0]}, }
 
     def onchange_name( self, cr, uid, id, firstname, lastname, dob, context = None ):
@@ -92,6 +93,7 @@ class res_partner( osv.osv ):
 
     def _get_age( self, cr, uid, ids, field_name, arg, context = {} ):
         # print 'JE PASSE PAR _GET_AGE et CONTEXT is:', context
+        _logger.info( 'in _get_age ...' )
         res = {}
         records = self.browse( cr, uid, ids, context )
         date = DateTime.today()
