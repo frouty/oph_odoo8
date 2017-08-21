@@ -77,3 +77,8 @@ essayer quelque chose du genre:
 - [ ] P
 
 # faire un lien entre l'objet calendar.event et l'objet invoice.invoice
+- de facon à pouvoir savoir le statut de la facturation pour chaque rendez vous. Ce qui nous permettrez de ne pas avoir à passer par loginvoices.
+
+# crm.meeting
+- [ ] bloquer la possibilité de pouvoir créer un rendez-vous si l'on n'est pas sur un crenaux.
+- [ ] certains groupes doivent pouvoir créer un rendez-vous s'il n'y en a pas.
