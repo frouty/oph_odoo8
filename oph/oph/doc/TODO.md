@@ -83,7 +83,7 @@ essayer quelque chose du genre:
  
 
 # faire un lien entre l'objet calendar.event et l'objet invoice.invoice
-- [ ] 
+- [ ] todo
 - de facon à pouvoir savoir le statut de la facturation pour chaque rendez vous. Ce qui nous permettrez de ne pas avoir à passer par loginvoices.
 
 # crm.meeting
