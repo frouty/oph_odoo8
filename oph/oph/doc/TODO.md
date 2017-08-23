@@ -82,7 +82,8 @@ essayer quelque chose du genre:
 - [ ] Mettre en place un bouton pour délier la copie automatique de l'oeil droit vers l'oeil gauche
  
 
-# [ ] faire un lien entre l'objet calendar.event et l'objet invoice.invoice
+# faire un lien entre l'objet calendar.event et l'objet invoice.invoice
+- [ ] 
 - de facon à pouvoir savoir le statut de la facturation pour chaque rendez vous. Ce qui nous permettrez de ne pas avoir à passer par loginvoices.
 
 # crm.meeting
@@ -102,9 +103,9 @@ pour avoir le nom de l'imprimante
 lpstat -p -d
 ~~~
 on aura quelque chose avec:  
-~InputSlot/Media Source: *Auto Main~  
+`InputSlot/Media Source: *Auto Main`  
 Et on va pouvoir utiliser le keyword et la value comme option pour l'impression de la façon suivante:
-~lpr -o InputSlot=Main ....~
+`lpr -o InputSlot=Main ....`
 
 
 # gestion des états par lot
