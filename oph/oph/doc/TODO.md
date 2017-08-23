@@ -106,7 +106,8 @@ on aura quelque chose avec:
 `InputSlot/Media Source: *Auto Main`  
 Et on va pouvoir utiliser le keyword et la value comme option pour l'impression de la façon suivante:
 `lpr -o InputSlot=Main ....`
-
+### liste des command-Lines Printing and Options
+http://www.it.uu.se/datordrift/maskinpark/skrivare/cups/
 
 # gestion des états par lot
 - [ ] pouvoir gérer le paiement par lot de factures.
