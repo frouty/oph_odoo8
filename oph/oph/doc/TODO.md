@@ -79,10 +79,33 @@ essayer quelque chose du genre:
 # faire un copie automatique de or to ol pour les champs:
 - [ ] M
 - [ ] P
+- [ ] Mettre en place un bouton pour délier la copie automatique de l'oeil droit vers l'oeil gauche
+ 
 
-# faire un lien entre l'objet calendar.event et l'objet invoice.invoice
+# [ ] faire un lien entre l'objet calendar.event et l'objet invoice.invoice
 - de facon à pouvoir savoir le statut de la facturation pour chaque rendez vous. Ce qui nous permettrez de ne pas avoir à passer par loginvoices.
 
 # crm.meeting
 - [ ] bloquer la possibilité de pouvoir créer un rendez-vous si l'on n'est pas sur un crenaux.
 - [ ] certains groupes doivent pouvoir créer un rendez-vous s'il n'y en a pas.
+
+# print invoice.invoice
+- [ ] imprimer automatiquement par un simple clic sur un bouton un document.
+Par exemple la feuille de soins je ne la relis jamais avant de l'imprimer. 
+- [ ] faire que cette commande qui lance l'impression choisisse le bon tray
+
+##	ressources 
+~~~
+lpoptions -l  ou
+lpoptions -p nom.de.l.imprimante
+pour avoir le nom de l'imprimante
+lpstat -p -d
+~~~
+on aura quelque chose avec:  
+~InputSlot/Media Source: *Auto Main~  
+Et on va pouvoir utiliser le keyword et la value comme option pour l'impression de la façon suivante:
+~lpr -o InputSlot=Main ....~
+
+
+# gestion des états par lot
+- [ ] pouvoir gérer le paiement par lot de factures.
