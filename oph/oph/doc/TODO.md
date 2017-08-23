@@ -1,7 +1,7 @@
 # res.partner
--[ ] onglet sales & purchase mettre le champ pour la liste de prix.
+- [ ] onglet sales & purchase mettre le champ pour la liste de prix.
 
--[X] Pouvoir entrer des caractères accentués dans le prénom.
+- [X] Pouvoir entrer des caractères accentués dans le prénom.
 
 pour obtenir l'encodage:
 
